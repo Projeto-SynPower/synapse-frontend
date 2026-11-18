@@ -1,0 +1,324 @@
+/* AI Knowledge Studio Design System — tokens de design de produção
+ *
+ * ARQUIVO GERADO por scripts/gen_tokens_css.py a partir de scripts/tokens.json.
+ * Não edite aqui: mude o tokens.json e rode o gerador de novo (o
+ * `--check` acusa quando os dois estão fora de sincronia).
+ *
+ * Uso: cole/importe este arquivo antes do seu CSS e consuma sempre por
+ * var(--token). Nenhum valor de cor, raio, sombra, espaçamento ou
+ * tipografia deve aparecer literal na sua folha de estilo — se faltar um
+ * token para o que você precisa, o caso está nos catálogos da skill, não
+ * num valor novo inventado.
+ *
+ * Regra de ouro: branco e cinza frio pintam a área; o índigo --primary marca só a ação e o item ativo
+ *
+ * NUNCA como cor de texto: --warning, --ring, --sidebar-ring, --red-500, --orange-500, --orange-600, --amber-500, --amber-600, --emerald-500, --emerald-600, --sky-500, --sky-600, --blue-500, --violet-500, --purple-500, --rose-500 —
+ * todos falham WCAG AA (banlist em scripts/tokens.json).
+ */
+
+:root {
+
+  /* Cor — tema claro (papéis semânticos + rampas Tailwind em uso) — §3.1 */
+  --background: #FFFFFF;
+  --foreground: #12161B;
+  --surface-1: #FFFFFF;
+  --surface-2: #F5F7F9;
+  --surface-3: #EDF0F4;
+  --card: #FFFFFF;
+  --card-foreground: #12161B;
+  --popover: #FFFFFF;
+  --popover-foreground: #12161B;
+  --brand: #3F46AC;
+  --brand-2: #3F46AC;
+  --primary: #3F46AC;
+  --primary-foreground: #FCFCFC;
+  --secondary: #EDF0F4;
+  --secondary-foreground: #171B20;
+  --muted: #EDF0F4;
+  --muted-foreground: #5F646A;
+  --accent: #E9EBF3;
+  --accent-foreground: #21265F;
+  --destructive: #CC272E;
+  --destructive-foreground: #FCFCFC;
+  --success: #00884B;
+  --warning: #B67700;
+  --info: #006AA5;
+  --success-soft: #E6F3ED;
+  --success-border: #8AC8AC;
+  --warning-soft: #F8F1E6;
+  --warning-border: #DEC08A;
+  --destructive-soft: #FAE9EA;
+  --destructive-border: #E89B9F;
+  --info-soft: #E6F0F6;
+  --info-border: #8ABAD6;
+  --border: #DADEE3;
+  --input: #E1E5EA;
+  --ring: #3F46AC80;
+  --sidebar: #E1E6F3;
+  --sidebar-foreground: #0E121A;
+  --sidebar-primary: #3F46AC;
+  --sidebar-primary-foreground: #FCFCFC;
+  --sidebar-accent: #CFD6E6;
+  --sidebar-accent-foreground: #090D15;
+  --sidebar-border: #AEB4C5;
+  --sidebar-ring: #3F46AC66;
+  --red-300: #FFA2A2;
+  --red-400: #FF6467;
+  --red-500: #FB2C36;
+  --red-600: #E7000B;
+  --red-700: #C10007;
+  --orange-100: #FFEDD4;
+  --orange-300: #FFB86A;
+  --orange-500: #FF6900;
+  --orange-600: #F54900;
+  --orange-700: #CA3500;
+  --orange-900: #7E2A0C;
+  --amber-100: #FEF3C6;
+  --amber-300: #FFD230;
+  --amber-400: #FFB900;
+  --amber-500: #FE9A00;
+  --amber-600: #E17100;
+  --amber-700: #BB4D00;
+  --amber-800: #973C00;
+  --amber-900: #7B3306;
+  --emerald-100: #D0FAE5;
+  --emerald-300: #5EE9B5;
+  --emerald-400: #00D492;
+  --emerald-500: #00BC7D;
+  --emerald-600: #009966;
+  --emerald-700: #007A55;
+  --emerald-900: #004F3B;
+  --teal-100: #CBFBF1;
+  --teal-300: #46ECD5;
+  --teal-900: #0B4F4A;
+  --sky-100: #DFF2FE;
+  --sky-300: #74D4FF;
+  --sky-500: #00A6F4;
+  --sky-600: #0084D1;
+  --sky-700: #0069A8;
+  --sky-900: #024A70;
+  --blue-300: #8EC5FF;
+  --blue-500: #2B7FFF;
+  --blue-700: #1447E6;
+  --indigo-100: #E0E7FF;
+  --indigo-300: #A3B3FF;
+  --indigo-900: #312C85;
+  --violet-100: #EDE9FE;
+  --violet-300: #C4B4FF;
+  --violet-500: #8E51FF;
+  --violet-700: #7008E7;
+  --violet-900: #4D179A;
+  --purple-300: #DAB2FF;
+  --purple-500: #AD46FF;
+  --purple-700: #8200DB;
+  --rose-100: #FFE4E6;
+  --rose-300: #FFA1AD;
+  --rose-400: #FF637E;
+  --rose-500: #FF2056;
+  --rose-600: #EC003F;
+  --rose-700: #C70036;
+  --rose-900: #8B0836;
+  --white: #FFFFFF;
+  --black: #000000;
+
+  /* Elevação e sombra — §3.4 */
+  --shadow-sm: 0 1px 2px rgba(16,23,31,.06);
+  --shadow-md: 0 2px 6px rgba(16,23,31,.06), 0 8px 24px -8px rgba(16,23,31,.1);
+  --shadow-lg: 0 4px 12px rgba(16,23,31,.08), 0 24px 48px -16px rgba(16,23,31,.14);
+  --shadow-glow: 0 0 0 1px rgba(63,70,172,.18);
+  --shadow-glow-violet: 0 0 0 1px rgba(63,70,172,.18);
+  --shadow-sidebar: 1px 0 0 var(--sidebar-border), 8px 0 24px -18px rgba(11,16,35,.28);
+  --shadow-primary-sm: 0 2px 6px -1px rgba(63,70,172,.35), 0 1px 2px rgba(0,0,0,.06);
+
+  /* Gradiente de marca — §3.5 */
+  --gradient-brand: linear-gradient(135deg, #474FB6 0%, #413AA0 100%);
+  --gradient-brand-soft: linear-gradient(135deg, rgba(63,70,172,.08) 0%, rgba(63,70,172,.04) 100%);
+
+  /* Blur — §3.5 */
+  --blur-sm: 8px;
+  --blur-2xl: 40px;
+
+  /* Raio — filho sempre com raio menor ou igual ao do pai — §3.6 */
+  --radius-default: 4px;
+  --radius-sm: 10px;
+  --radius-md: 12px;
+  --radius: 14px;
+  --radius-lg: 14px;
+  --radius-xl: 18px;
+  --radius-2xl: 22px;
+  --radius-3xl: 26px;
+  --radius-full: 9999px;
+
+  /* Espaçamento — §3.7 */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-7: 28px;
+  --sp-8: 32px;
+  --sp-9: 36px;
+  --sp-10: 40px;
+  --sp-12: 48px;
+  --sp-16: 64px;
+
+  /* Altura de controle — §3.8 */
+  --size-control-xs: 28px;
+  --size-control-sm: 30px;
+  --size-control-md: 36px;
+  --size-control-lg: 40px;
+
+  /* Z-index — cada camada tem seu valor nominal, nunca 9999 avulso — §3.10 */
+  --z-base: 0;
+  --z-10: 10;
+  --z-20: 20;
+  --z-30: 30;
+  --z-40: 40;
+  --z-50: 50;
+
+  /* Largura máxima — §5.2 */
+  --container-sm: 24rem;
+  --container-md: 28rem;
+  --container-lg: 32rem;
+  --container-xl: 36rem;
+  --container-2xl: 42rem;
+  --container-3xl: 48rem;
+  --container-4xl: 56rem;
+  --container-5xl: 64rem;
+  --container-6xl: 72rem;
+  --container-7xl: 80rem;
+
+  /* Breakpoints — layout mobile-first, cresce por min-width — §5.4 */
+  --bp-sm: 40rem;
+  --bp-md: 48rem;
+  --bp-lg: 64rem;
+  --bp-xl: 80rem;
+  --bp-2xl: 96rem;
+
+  /* Família */
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Geist", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  /* Escala tipográfica */
+  --fs-xs: 0.75rem;
+  --fs-sm: 0.875rem;
+  --fs-base: 1rem;
+  --fs-lg: 1.125rem;
+  --fs-xl: 1.25rem;
+  --fs-2xl: 1.5rem;
+  --fs-3xl: 1.875rem;
+  --fs-4xl: 2.25rem;
+  --fs-5xl: 3rem;
+  --fs-6xl: 3.75rem;
+  --fs-7xl: 4.5rem;
+
+  /* Altura de linha */
+  --lh-none: 1;
+  --lh-tight: 1.25;
+  --lh-snug: 1.375;
+  --lh-normal: 1.5;
+  --lh-relaxed: 1.625;
+
+  /* Peso */
+  --fw-normal: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+
+  /* Espaçamento entre letras */
+  --tracking-display: -0.01em;
+  --tracking-tight: -0.025em;
+  --tracking-wide: 0.025em;
+  --tracking-wider: 0.05em;
+  --tracking-widest: 0.1em;
+
+  /* Motion — Duração — §3.9 */
+  --dur-default: 150ms;
+  --dur-spin: 1s;
+  --dur-pulse: 2s;
+
+  /* Motion — Easing — §3.9 */
+  --ease-default: cubic-bezier(.4, 0, .2, 1);
+  --ease-out-ping: cubic-bezier(0, 0, .2, 1);
+  --ease-pulse: cubic-bezier(.4, 0, .6, 1);
+}
+
+/* Tema escuro (§27) — os MESMOS nomes, outro escopo. Valores
+ * do grupo `dark` do tokens.json, emitidos sem o prefixo `dark-`. O que
+ * não aparece aqui herda o valor do tema claro. */
+.dark, [data-app-shell].dark {
+  color-scheme: dark;
+  --background: #11151B;
+  --foreground: #ECEFF2;
+  --surface-1: #171C22;
+  --surface-2: #1E232A;
+  --surface-3: #252B32;
+  --card: #13181E;
+  --card-foreground: #ECEFF2;
+  --popover: #151A20;
+  --popover-foreground: #ECEFF2;
+  --brand: #8393FF;
+  --brand-2: #8393FF;
+  --primary: #8393FF;
+  --primary-foreground: #0A0E12;
+  --secondary: #21272F;
+  --secondary-foreground: #ECEFF2;
+  --muted: #1B2128;
+  --muted-foreground: #8D939B;
+  --accent: #262C47;
+  --accent-foreground: #ECEFF2;
+  --destructive: #E64343;
+  --destructive-foreground: #FCFCFC;
+  --success: #3BB974;
+  --warning: #EFA831;
+  --info: #4BAEED;
+  --success-soft: #172827;
+  --success-border: #256246;
+  --warning-soft: #292620;
+  --warning-border: #785A27;
+  --destructive-soft: #281C22;
+  --destructive-border: #742C2F;
+  --info-soft: #192733;
+  --info-border: #2D5D7D;
+  --border: #282E37B2;
+  --input: #282E37;
+  --ring: #8393FF8C;
+  --sidebar: #06080D;
+  --sidebar-foreground: #ECEFF2;
+  --sidebar-accent: #171C23;
+  --sidebar-accent-foreground: #ECEFF2;
+  --sidebar-border: #232932CC;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,.3);
+  --shadow-md: 0 8px 24px -8px rgba(0,0,0,.45);
+  --shadow-lg: 0 20px 50px -12px rgba(0,0,0,.55);
+}
+
+/* Base mínima: fonte e superfície de página. Sem isto, a tela herda a
+ * fonte do navegador e o fundo do user agent — nenhum dos dois é da skill. */
+body {
+  font-family: var(--font-sans);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-normal);
+  color: var(--foreground);
+  background: var(--background);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Foco visível é requisito WCAG 2.4.7, não enfeite (§20.5). Remover o
+ * outline sem substituto é falha crítica; este é o substituto padrão. */
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Movimento reduzido (§3.9) — bloco lido de ../tokens/motion-icons.md,
+ * não recopiado: duas versões da mesma regra divergem, e já divergiram. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}

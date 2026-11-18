@@ -1,0 +1,109 @@
+{
+  "_comentario": "Como adicionar cada plugin, em português. Os comandos são montados em app.js a partir do id do plugin; aqui ficam só as observações de cada forma de instalar. Só afirme o que está nos READMEs do repositório (raiz e plugins/<id>/README.md).",
+  "comum": {
+    "aviso": "O repositório é privado: o git da máquina precisa ter acesso a Projeto-SynPower/synapse.",
+    "npx": "Precisa de Node 18 ou mais. Rode na raiz do projeto.",
+    "npx_padrao": "Para instalar no usuário em vez do projeto, acrescente `-g`. Para só ver o que seria feito, `--dry-run`.",
+    "claude_padrao": "Confira com `claude plugin list`.",
+    "codex_padrao": "Reinicie o Codex e confira com `codex plugin list`."
+  },
+  "plugins": {
+    "guardrails": {
+      "npx": {
+        "notas": [
+          "Instala nos dois agentes. Para só um deles, acrescente `--agent claude-code` ou `--agent codex`."
+        ]
+      },
+      "claude": {
+        "notas": [
+          "A sessão começa com a linha `[guardrails ATIVO]`. Se ela não aparecer, o plugin está desligado."
+        ]
+      },
+      "codex": {
+        "notas": [
+          "Depois de instalar, rode `/hooks` e confie nos hooks. Sem isso o guardrails não roda."
+        ]
+      }
+    },
+    "issue-planning": {
+      "npx": {
+        "notas": [
+          "Instale também o `guardrails` e, para consultar um GitLab, o `tracker-gitlab`.",
+          "Precisa do `gh auth login` (ou `glab auth login`) feito por você no terminal."
+        ]
+      },
+      "claude": {
+        "notas": [
+          "Instale também o `guardrails` e, para consultar um GitLab, o `tracker-gitlab`.",
+          "Precisa do `gh auth login` (ou `glab auth login`) feito por você no terminal."
+        ]
+      },
+      "codex": {
+        "notas": [
+          "Instale também o `guardrails` e, para consultar um GitLab, o `tracker-gitlab`.",
+          "A rede é bloqueada no sandbox padrão (`workspace-write`). Aprove o comando fora do sandbox quando o Codex pedir, ou habilite `network_access = true` em `[sandbox_workspace_write]` no seu `config.toml`."
+        ]
+      }
+    },
+    "tracker-gitlab": {
+      "npx": {
+        "notas": [
+          "O servidor MCP roda via `npx -y`: precisa de Node 18 ou mais e de acesso ao registro npm na primeira execução.",
+          "No Claude Code, configure host e token depois: `claude plugin configure tracker-gitlab@skills-dir`."
+        ]
+      },
+      "claude": {
+        "notas": [
+          "Na ativação o Claude Code pede a URL da API, com o sufixo `/api/v4`, e um token com escopo `read_api` (não `api`). Host interno exige VPN.",
+          "Instale também o `guardrails`: ele bloqueia a escrita por qualquer outro caminho."
+        ]
+      },
+      "codex": {
+        "notas": [
+          "O plugin traz a skill, mas não configura o servidor. Configure à mão em `~/.codex/config.toml`:"
+        ],
+        "codigo": "[mcp_servers.gitlab]\ncommand = \"npx\"\nargs = [\"-y\", \"@zereight/mcp-gitlab@2.3.23\", \"--permission-mode\", \"readonly\"]\nenv_vars = [\"GITLAB_PERSONAL_ACCESS_TOKEN\"]\n\n[mcp_servers.gitlab.env]\nGITLAB_API_URL = \"https://labgit.synchro.com.br/api/v4\"",
+        "depois": [
+          "Exporte `GITLAB_PERSONAL_ACCESS_TOKEN` no processo que inicia o Codex, sem imprimir o valor. O README do plugin diz que esse caminho não foi testado."
+        ]
+      }
+    },
+    "project-scoping": {
+      "npx": {
+        "notas": [
+          "Só grava arquivos locais. Não envia e-mail nem publica em rastreador."
+        ]
+      },
+      "claude": {
+        "notas": [
+          "Só grava arquivos locais. Não envia e-mail nem publica em rastreador."
+        ]
+      },
+      "codex": {
+        "notas": [
+          "Só grava arquivos locais. Não envia e-mail nem publica em rastreador."
+        ]
+      }
+    },
+    "implement-issue": {
+      "npx": {
+        "notas": [
+          "Instale também o `guardrails`.",
+          "Não publica nada: o `git push` e o MR ficam com você."
+        ]
+      },
+      "claude": {
+        "notas": [
+          "Instale também o `guardrails`.",
+          "Os três agentes (planner, software-engineer e code-reviewer) são do Claude Code. O plugin passa na validação, mas ainda não foi rodado numa sessão real."
+        ]
+      },
+      "codex": {
+        "notas": [
+          "Instale também o `guardrails`.",
+          "Pendente: o Codex talvez não carregue os agentes do plugin, só as skills. Isso ainda não foi verificado."
+        ]
+      }
+    }
+  }
+}

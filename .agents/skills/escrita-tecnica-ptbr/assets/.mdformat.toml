@@ -1,0 +1,24 @@
+# Configuração do mdformat usada por esta skill.
+# Copie para a raiz do projeto quando ele ainda não tiver uma.
+# https://mdformat.readthedocs.io/en/stable/users/configuration_file.html
+
+# Largura máxima da linha
+wrap = 120
+
+# Numera automaticamente listas ordenadas
+number = true
+
+# Diretórios excluídos da formatação
+exclude = [
+    ".venv/**",
+    ".pytest_cache/**",
+    "node_modules/**",
+    "build/**",
+    "dist/**",
+]
+
+# Remove espaços extras das tabelas GFM, deixando o separador como | -- | -- |
+[plugin.tables]
+compact_tables = true
+
+# Plugin necessário: mdformat-gfm (tabelas, strikethrough, task lists)

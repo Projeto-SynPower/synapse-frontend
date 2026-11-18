@@ -1,0 +1,283 @@
+{
+  "_comentario": "Texto editorial da landing, em português. Escrito à mão: o scripts/build_data.py junta este arquivo com o catalog.json. O que não está aqui cai no texto original do SKILL.md ou do plugin.json (em inglês, em parte das skills). Só afirme aqui o que está nos SKILL.md e README do repositório.",
+  "plugins": {
+    "guardrails": {
+      "resumo": "Bloqueia a leitura de segredos e qualquer escrita em rastreador (GitHub, GitLab, MCP), por hook, sem depender do modelo.",
+      "quando": "Instale junto de qualquer plugin que toque um rastreador.",
+      "limite": "O hook lê o texto do comando e não resolve indireção por variável. A garantia real de não publicar vem de um token somente leitura."
+    },
+    "issue-planning": {
+      "resumo": "Leva uma ideia até o rascunho de issue: brainstorm, mapa local de decisões para demanda grande e redação com evidência do board e do código.",
+      "quando": "Você tem uma demanda para um projeto GitHub ou GitLab e quer issues prontas para revisar.",
+      "limite": "Não publica nada. Quem publica é você, e o guardrails bloqueia a escrita mesmo com pedido explícito."
+    },
+    "tracker-gitlab": {
+      "resumo": "Servidor MCP do GitLab em modo somente leitura, para consultar issues, MRs, diffs e arquivos sem poder alterar nada.",
+      "quando": "O agente precisa ler um GitLab, self-hosted ou gitlab.com. Precisa de Node 18 ou mais no PATH.",
+      "limite": "Um token com escopo api ainda permite escrita por outro caminho. Por isso o plugin pede read_api."
+    },
+    "project-scoping": {
+      "resumo": "Ajuda um gerente a preencher a projetização de um produto no template acordado, em linguagem não técnica e de escopo macro.",
+      "quando": "Um gerente ou cliente traz uma ideia de produto e precisa do documento de projetização.",
+      "limite": "Só grava arquivos locais. Não envia e-mail nem publica em rastreador."
+    },
+    "implement-issue": {
+      "resumo": "Leva uma issue escrita até código em branch local: plano aprovado por você, implementação com testes, revisão contra os critérios de aceite e relatório final.",
+      "quando": "Você tem uma issue pronta (em arquivo .md, .txt ou na conversa) e quer o código implementado numa branch local para revisar.",
+      "limite": "Não faz push, não abre MR nem comenta no rastreador. Em desenvolvimento (0.1.0): nenhuma skill foi testada numa sessão real, e o suporte a agentes no Codex está pendente."
+    }
+  },
+  "skills": {
+    "brainstorm": {
+      "resumo": "Debate uma ideia antes de decidir: perguntas independentes, checagem em fontes e correção do usuário com evidência.",
+      "oQueE": "Uma skill de conversa. Ela entrevista por perguntas independentes pela interface do harness, confere afirmações em fontes primárias (documentação oficial, ACM, IEEE, blogs de engenharia de grandes empresas) e discorda do usuário quando a fonte desmente. Fecha com um resumo confirmado.",
+      "quando": [
+        "Você quer debater opções ou testar uma ideia antes de construir",
+        "Você pergunta \"não seria melhor...?\"",
+        "Falta decidir o que construir antes de escrever código ou documento"
+      ],
+      "entrega": "Um entendimento confirmado por você. Ela não escreve o documento final nem código."
+    },
+    "grilling": {
+      "resumo": "Entrevista o usuário sem pausa sobre um plano, para chegar a um entendimento comum, ramo a ramo.",
+      "oQueE": "Organiza o plano como uma árvore de decisões: cada decisão abre as que dependem dela, e a skill pergunta até fechar todos os ramos. É o motor das rodadas de perguntas dos plugins de planejamento.",
+      "quando": [
+        "Você quer pôr o próprio raciocínio sob pressão",
+        "Você usa um gatilho do tipo \"grill me\""
+      ],
+      "entrega": "Um plano sem ramo aberto.",
+      "nota": "Cópia do mattpocock/skills, mantida com lock e licença."
+    },
+    "domain-modeling": {
+      "resumo": "Afia o modelo de domínio do projeto: vocabulário em GLOSSARY.md e decisões em ADR.",
+      "oQueE": "Ajuda a fixar a terminologia do código e a registrar decisões de arquitetura, mantendo um glossário e os ADRs do projeto.",
+      "quando": [
+        "Um termo do domínio está ambíguo",
+        "Você vai escrever ou editar um GLOSSARY.md",
+        "Uma decisão pede um ADR"
+      ],
+      "entrega": "Glossário e ADRs atualizados."
+    },
+    "wayfinder": {
+      "resumo": "Divide uma demanda grande demais para uma sessão em um mapa de tickets de decisão, resolvidos um a um.",
+      "oQueE": "Para trabalho que um agente não cabe numa sessão, monta um mapa compartilhado de tickets de decisão e os resolve em ordem até o caminho ficar claro. Nos plugins do Synapse ela roda sempre em modo local, em arquivos do projeto.",
+      "quando": [
+        "A demanda tem várias issues e decisões em aberto",
+        "Uma conversa só não resolve a ideia"
+      ],
+      "entrega": "Um mapa de decisões, com tickets de pesquisa feitos pela skill research.",
+      "nota": "Escreve no rastreador no modo original. Os plugins forçam o modo local."
+    },
+    "research": {
+      "resumo": "Investiga uma pergunta em fontes primárias e grava o resultado em um Markdown no repositório.",
+      "oQueE": "Delega a leitura e a busca de fatos a um agente, contra fontes de alta confiança (documentação, APIs), e registra o que achou em arquivo.",
+      "quando": [
+        "Você quer um tema pesquisado",
+        "Faltam fatos de documentação ou de API",
+        "Um ticket do wayfinder é de pesquisa"
+      ],
+      "entrega": "Um arquivo Markdown com os achados e as fontes."
+    },
+    "diagnosing-bugs": {
+      "resumo": "Laço de diagnóstico para bug difícil e regressão de desempenho.",
+      "oQueE": "No plugin issue-planning, as fases 1 e 2 apoiam a prova de um bug difícil de reproduzir. Para antes de corrigir.",
+      "quando": [
+        "Você diz \"diagnostique\" ou \"debuga isso\"",
+        "Algo quebra, lança erro, falha ou fica lento"
+      ],
+      "entrega": "Um defeito reproduzível, pronto para virar issue."
+    },
+    "issue-writer": {
+      "resumo": "Redige rascunhos de issue (Feature, Fix ou Bug) com evidência do board e do código, sem publicar.",
+      "oQueE": "Segue seis passos: briefing, board, código, classificação, redação e uma rodada de avaliação. Cada afirmação sobre o código leva arquivo:linha, e um Bug leva uma prova reproduzível. É autocontida: tudo o que usa está nas próprias referências.",
+      "quando": [
+        "Você tem uma demanda e quer issues revisáveis para GitHub ou GitLab",
+        "A demanda ainda é só uma ideia e precisa de entrevista"
+      ],
+      "entrega": "Rascunhos locais em drafts/<demanda>/, com plano.md e uma issue por arquivo. Quem publica é você."
+    },
+    "issue-planning": {
+      "resumo": "Cola do plugin issue-planning: liga brainstorm, wayfinder e issue-writer em um caminho só.",
+      "oQueE": "Não redige issue. Roda o brainstorm, chama o wayfinder em modo local quando a demanda é grande, escreve o briefing e entrega à issue-writer, pedindo prosa nas regras do escrita-tecnica-ptbr e do stop-slop.",
+      "quando": [
+        "Você traz uma ideia ou demanda de um projeto GitHub ou GitLab e quer issues"
+      ],
+      "entrega": "Um briefing confirmado e, a partir dele, os rascunhos da issue-writer.",
+      "nota": "Só existe dentro do plugin issue-planning."
+    },
+    "project-brief-writer": {
+      "resumo": "Redige a projetização de um produto no template acordado, em português simples e de escopo macro.",
+      "oQueE": "Entrevista uma pergunta por vez, desafia afirmações com evidência, pesquisa fontes confiáveis (material primário de grandes empresas, bases acadêmicas) e escreve um rascunho não técnico que segue o template. Roda uma rodada de avaliação só da escrita.",
+      "quando": [
+        "Um gerente ou cliente precisa preencher o documento de projetização"
+      ],
+      "entrega": "Um rascunho local do documento. Nada é enviado.",
+      "nota": "Só existe dentro do plugin project-scoping."
+    },
+    "project-scoping": {
+      "resumo": "Cola do plugin project-scoping: liga brainstorm, wayfinder e project-brief-writer.",
+      "oQueE": "Roda o brainstorm com o gerente, usa o wayfinder em modo local para ideia grande, escreve o briefing e entrega à project-brief-writer. Não redige o documento.",
+      "quando": [
+        "Um gerente ou cliente traz uma ideia de produto e quer a projetização"
+      ],
+      "entrega": "Um briefing confirmado e, a partir dele, o rascunho do documento.",
+      "nota": "Só existe dentro do plugin project-scoping."
+    },
+    "tracker-readonly": {
+      "resumo": "Consulta GitHub ou GitLab (issues, MRs, PRs, boards) só em leitura; rascunhos vão para arquivo local.",
+      "oQueE": "Acompanha o plugin guardrails e define como consultar um rastreador sem publicar nada.",
+      "quando": [
+        "Você consulta ou planeja contra um rastreador"
+      ],
+      "entrega": "Consulta sem escrita; rascunhos em arquivos locais."
+    },
+    "gitlab-readonly": {
+      "resumo": "Orienta o uso do MCP do GitLab em leitura: issues, MRs, diffs, commits e arquivos.",
+      "oQueE": "Acompanha o plugin tracker-gitlab. Só usa as ferramentas de leitura do servidor MCP e nunca publica.",
+      "quando": [
+        "Você lê um projeto GitLab pelo servidor MCP"
+      ],
+      "entrega": "Respostas com o que está no GitLab, sem alterar nada."
+    },
+    "implement-issue-gitlab": {
+      "resumo": "Conduz uma issue do grupo ia_produtos até o Merge Request, com portões de qualidade.",
+      "oQueE": "Orquestrador autônomo: recebe o link ou o número da issue, reúne contexto, planeja, dirige subagentes que pesquisam e constroem (cavecrew: investigator, builder, reviewer), aplica os portões (testes, Sonar, arquitetura) e abre o MR. Usa a lca em serviços Python e a feature-sliced-design em frontends React.",
+      "quando": [
+        "Você tem uma issue do GitLab da Synchro e quer a implementação até o MR"
+      ],
+      "entrega": "Um Merge Request aberto.",
+      "nota": "Escreve no GitLab. Exige o MCP do GitLab, gitlab-mcp-skill e cavecrew, que são de terceiros e ficam como recomendação."
+    },
+    "review-issue-gitlab": {
+      "resumo": "Revisa uma branch contra os requisitos de uma issue do GitLab e aponta bugs e vulnerabilidades, no chat.",
+      "oQueE": "Compara as alterações da branch com a issue e lista bugs, vulnerabilidades e pontos de atenção em um relatório na conversa. Não comenta no GitLab nem altera nada.",
+      "quando": [
+        "Você quer uma revisão de código ligada a uma issue, sem publicar comentário"
+      ],
+      "entrega": "Um relatório na conversa."
+    },
+    "lca": {
+      "resumo": "Arquitetura em camadas (Layered Capability Architecture) para backends Python, com dependências só para baixo.",
+      "oQueE": "Pilha de sete níveis (L5 Entrypoint até L0 Contracts) com dependências verificadas pelo import-linter e fatias de capacidade escolhidas em tempo de execução. Decide onde cada código Python vive: router, service, repository, connector, schema.",
+      "quando": [
+        "Você decide onde um código Python pertence",
+        "Você cria um domínio ou endpoint de ponta a ponta",
+        "Você adiciona um repositório, serviço ou implementação de capacidade"
+      ],
+      "entrega": "Código dentro dos limites de camada."
+    },
+    "escrita-tecnica-ptbr": {
+      "resumo": "Padrão de escrita de documentação técnica em português do Brasil: voz, estrutura, pontuação e diagramas Mermaid.",
+      "oQueE": "Extraída de projetos da Synchro. Cobre voz, estrutura, gramática e pontuação, frase objetiva sem frase de efeito, uso do travessão e diagramas Mermaid nos documentos.",
+      "quando": [
+        "Você cria, edita, revisa ou traduz Markdown de documentação (docs/, README, ADR, guias de API)"
+      ],
+      "entrega": "Documentação no padrão da equipe."
+    },
+    "stop-slop": {
+      "resumo": "Corta padrões de texto de IA sem perder contexto técnico, motivo de negócio nem precisão.",
+      "oQueE": "Lista de padrões a eliminar em specs, issues, PRs e RFCs, com a exigência de nomes exatos de tabela, campo e estado.",
+      "quando": [
+        "Você escreve ou edita spec, issue, PR ou prosa técnica"
+      ],
+      "entrega": "Texto direto e preciso."
+    },
+    "verificador-agentes-api": {
+      "resumo": "Investiga, sem modificar, um módulo, repositório ou API REST e lista o que impede agentes de IA e MCP de consumi-lo.",
+      "oQueE": "Lê o alvo (com ou sem OpenAPI) e gera um relatório dos problemas que atrapalham um agente. Só lê.",
+      "quando": [
+        "Você quer saber se uma API está pronta para ser consumida por agentes"
+      ],
+      "entrega": "Um relatório de problemas."
+    },
+    "knowledge-studio-ds": {
+      "resumo": "Design system do AI Knowledge Studio: tokens, padrões de tela e verificadores de contraste, lint e dominância de cor.",
+      "oQueE": "Tokens medidos no CSS do app (claro e escuro), vocabulário de status, padrões de tela e scripts que verificam o resultado. Esta própria landing segue essa skill.",
+      "quando": [
+        "Você cria, altera ou revisa uma tela, componente ou texto de interface"
+      ],
+      "entrega": "Interface no padrão do app, com a lista do que foi derivado e do que foi observado.",
+      "nota": "Skill de autoria interna, fora dos plugins."
+    },
+    "implement-issue": {
+      "resumo": "Coordena a implementação de uma issue em branch local, do plano à revisão, com duas aprovações humanas.",
+      "oQueE": "A orquestradora do plugin. Não escreve código, não planeja e não revisa: lê a issue, chama os agentes planner, software-engineer e code-reviewer na ordem, pergunta a você quando preciso e guarda as decisões em .scratch/<issue>/. Se o repositório já tem skills de desenvolvimento locais, elas vencem as do plugin, e o conflito vira pergunta para você.",
+      "quando": [
+        "Você tem uma issue com problema, objetivo ou critérios de aceite e quer implementá-la",
+        "Uma sessão foi interrompida e precisa retomar de onde parou"
+      ],
+      "entrega": "Código em branch local, resultado dos portões de qualidade e um relatório que liga cada critério de aceite à sua evidência. O git push fica como comando para você rodar.",
+      "nota": "Escrita, mas não testada numa sessão real."
+    },
+    "issue-explore": {
+      "resumo": "Investiga o repositório a partir da issue e grava o que muda, sem alterar código.",
+      "oQueE": "Mapeia arquivos e símbolos a mudar, documentação e testes afetados, comandos de teste e lint, convenções, skills locais de desenvolvimento, riscos e dúvidas. Deriva da openspec-explore (OpenSpec, MIT), sem o CLI e com começo e fim definidos.",
+      "quando": [
+        "Antes de planejar a implementação de uma issue"
+      ],
+      "entrega": "O arquivo .scratch/<issue>/exploration.md."
+    },
+    "issue-propose": {
+      "resumo": "Transforma a exploração em um plano que você aprova antes de qualquer código.",
+      "oQueE": "Lê a exploração e escreve proposal.md, design.md e tasks.md, com cada tarefa ligada a um critério de aceite. Não implementa nada. Deriva da openspec-propose (OpenSpec, MIT), sem o CLI.",
+      "quando": [
+        "Depois da issue-explore, para produzir o plano de aprovação"
+      ],
+      "entrega": "Os arquivos proposal.md, design.md e tasks.md em .scratch/<issue>/."
+    },
+    "issue-apply": {
+      "resumo": "Implementa o plano aprovado, tarefa por tarefa, com TDD e evidência registrada.",
+      "oQueE": "Executa as tarefas de tasks.md em branch local, uma por vez, com a skill tdd. Marca cada tarefa, registra a evidência e roda os portões de qualidade no fim. Não reescreve o design: se o plano não serve, devolve ao planner. Nunca faz push. Deriva da openspec-apply-change (OpenSpec, MIT).",
+      "quando": [
+        "Só depois de você aprovar o plano"
+      ],
+      "entrega": "Código implementado, tarefas marcadas e evidência por tarefa."
+    },
+    "issue-document": {
+      "resumo": "Depois da aprovação final, documenta o que a implementação decidiu.",
+      "oQueE": "Gera ADR, decisão arquitetural, diagrama ou atualização de documentos a partir dos artefatos da issue. Tem quatro modos: listar candidatos, escrever os aprovados, commitar e descartar. Registra a decisão que foi tomada, não inventa outra.",
+      "quando": [
+        "Depois da aprovação final e antes de apagar .scratch/<issue>/"
+      ],
+      "entrega": "Documentos do repositório que você aprovou, em um único commit só com o header. \"Nenhum documento necessário\" é um resultado válido."
+    },
+    "diff-review": {
+      "resumo": "Mostra o diff entre duas branches locais num HTML de MR, onde você anota e devolve as notas ao agente.",
+      "oQueE": "Gera um HTML no estilo de MR do GitHub ou GitLab com o git diff base...head. Você anota linhas e arquivos no navegador e, em Finalizar review, copia um Markdown com as observações numeradas para o agente aplicar.",
+      "quando": [
+        "Você quer ver ou revisar a implementação de uma branch contra outra"
+      ],
+      "entrega": "Um HTML de review e, depois, o Markdown com as suas notas.",
+      "nota": "Precisa de Python 3 e git. O realce de sintaxe usa o CDN do highlight.js: sem internet, o diff aparece sem cores."
+    },
+    "tdd": {
+      "resumo": "Desenvolvimento guiado por testes: escreva o teste que falha, faça passar, refatore.",
+      "oQueE": "Referência do ciclo red → green: o que é um bom teste, onde os testes ficam, os erros comuns e as regras do ciclo, com guias de testes e de mocks. Aqui é autocontida, sem referências a outras skills.",
+      "quando": [
+        "Você constrói uma funcionalidade ou corrige um bug começando pelo teste",
+        "Você quer testes de integração"
+      ],
+      "entrega": "Testes que valem ser mantidos e código que os faz passar."
+    },
+    "stop-slop-delivery": {
+      "resumo": "Tira as marcas de texto de IA de commit, relatório e rascunho de MR.",
+      "oQueE": "Adaptada da stop-slop (Sibipiruna) ao que a implementação entrega: mensagem de commit, relatório de critérios de aceite, rascunho de descrição de MR e documentos de decisão. Pede precisão técnica sem cortar contexto. Não vale para issues nem para comentários em código.",
+      "quando": [
+        "Você redige ou revisa commit, relatório ou rascunho de MR"
+      ],
+      "entrega": "Texto de entrega direto e sem enfeite."
+    }
+  },
+  "ajuda": {
+    "rastreador": {
+      "none": "Não toca no rastreador",
+      "read": "Só lê o rastreador",
+      "write": "Escreve no rastreador"
+    },
+    "origem": {
+      "own": "Escrita pela equipe",
+      "copy": "Cópia fiel de outro repositório",
+      "external": "Terceiros, com origem e lock"
+    }
+  }
+}

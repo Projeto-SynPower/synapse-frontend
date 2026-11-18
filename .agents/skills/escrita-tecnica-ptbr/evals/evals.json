@@ -1,0 +1,81 @@
+{
+  "skill_name": "escrita-tecnica-ptbr",
+  "evals": [
+    {
+      "id": 0,
+      "name": "documentar-feature-nova",
+      "prompt": "Subi um endpoint novo no ai-agents: POST /api/v1/tenant/{tenant}/env/{env}/threads/{thread_sequence}/export, que exporta uma thread inteira em JSON ou Markdown. Ele aceita no body um campo format (json|markdown, default json), includeAttachments (bool, default false) e um dateRange opcional com from/to em ISO. Devolve 202 e um exportId pra consultar depois em GET /exports/{exportId}. A exportacao roda em background e o arquivo fica 24h no S3 com presigned URL. Escreve a documentacao disso em docs/export-threads.md.",
+      "expected_output": "Documento em docs/export-threads.md seguindo o padrao da casa: H1 nominal, paragrafo de abertura, exemplo de payload + tabela de parametros, fluxo, formatacao de 120 colunas. Reprova se a saida contiver antropomorfismo, coloquialidade ou storytelling, conforme criterios_de_rejeicao.",
+      "files": []
+    },
+    {
+      "id": 1,
+      "name": "escrever-adr",
+      "prompt": "A gente decidiu no data-pipeline-orchestrator trocar o parser padrao de PDF de PyMuPDF pra Docling. Motivo: os PDFs de notas fiscais e contratos que a gente ingere tem muita tabela e o PyMuPDF entrega o texto embaralhado, o que degrada o retrieval. Avaliamos tambem manter PyMuPDF com um pos-processamento proprio, e usar OCR via Tesseract. O Docling custa mais caro em latencia (uns 3-4x) e exige subir um servico separado, mas a qualidade da extracao de tabela e muito melhor. Vamos deixar o PyMuPDF disponivel como opcao pra quem precisa de velocidade. Escreve o ADR disso.",
+      "expected_output": "ADR numerado 0006 em docs/adr/, seguindo o template dos ADRs existentes, com Status/Data/Autor, contexto com alternativas numeradas, decisao em 1a pessoa do plural, consequencias positivas e negativas, e a linha adicionada no indice docs/adr/README.md. Reprova se a saida contiver antropomorfismo, coloquialidade ou storytelling, conforme criterios_de_rejeicao.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "name": "revisar-rascunho-ruim",
+      "prompt": "Escrevi esse rascunho de documentacao de webhooks meio na correria. Revisa e deixa no padrao da nossa documentacao, por favor.",
+      "expected_output": "Documento reescrito: prosa concisa sem gerundismo e sem enchimento, voz correta, termos em portugues, exemplo com valores realistas, tabela de parametros, diagrama Mermaid corrigido (parenteses com aspas), estrutura com lead e hierarquia correta. Reprova se a saida contiver antropomorfismo, coloquialidade ou storytelling, conforme criterios_de_rejeicao.",
+      "files": [
+        "inputs/rascunho-webhooks.md"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "reescrever-tom-antropomorfico",
+      "prompt": "Revisa esse trecho que escrevi pra issue do BFF: 'O BFF so sabe falar com o ai-agents, entao por enquanto nenhuma rota tem onde morar. Falta o app irmao nascer no monorepo pra essa historia ter final feliz. Depois que ele nascer, o servico finalmente vai poder falar com o banco e a vida do time melhora.' Deixa no padrao da nossa documentacao.",
+      "expected_output": "Trecho reescrito sem nenhum verbo humano ou emocional aplicado a artefato e sem narrativa: o BFF encaminha requisicoes apenas para o ai-agents; o modulo apps/agent-studio/api ainda nao existe no monorepo, portanto nenhuma rota esta registrada no roteador; o servico comunica com a base de dados depois que esse modulo for criado. Voz ativa com o componente como sujeito, vocabulario de engenharia, sem 'final feliz' nem 'a vida do time melhora'. O comando docfmt.py check nao deve reportar nenhuma ocorrencia de [antropomorfismo].",
+      "files": []
+    }
+  ],
+  "criterios_de_rejeicao": {
+    "descricao": "Criterios eliminatorios aplicados a qualquer saida desta skill, antes de avaliar o eval individual. A ocorrencia de qualquer item abaixo reprova a saida mesmo que a estrutura, a formatacao e os fatos estejam corretos; a correcao exigida e reescrever a frase, e nao suavizar o termo.",
+    "criterios": [
+      {
+        "id": "antropomorfismo",
+        "regra": "Verbo humano ou emocional aplicado a codigo, servico, rota, tabela, modulo ou aplicacao. O artefato nao fala, nao conversa, nao mora, nao nasce, nao morre, nao sabe, nao quer, nao enxerga, nao entende e nao reclama. Metafora de parentesco, moradia ou sentimento ('app irmao', 'rota sem casa') cai na mesma regra.",
+        "acao": "reprova",
+        "exemplos_reprovados": [
+          "O BFF so sabe falar com o ai-agents.",
+          "Nenhuma rota tem onde morar.",
+          "Falta o app irmao.",
+          "O servico fala com o banco."
+        ],
+        "correcao_exigida": [
+          "O BFF encaminha requisicoes apenas para o ai-agents.",
+          "Nenhuma rota esta registrada no roteador.",
+          "O modulo apps/agent-studio/api ainda nao existe.",
+          "O servico comunica com a base de dados."
+        ],
+        "excecao": "Termo consagrado importado do ingles tecnico nao e metafora: no pai, no filho, processo orfao, daemon, handshake.",
+        "verificacao": "python3 scripts/docfmt.py check <arquivo>  # codigo [antropomorfismo]"
+      },
+      {
+        "id": "coloquialidade",
+        "regra": "Registro de conversa em texto tecnico: girias, interjeicoes, ironia, pergunta retorica dirigida ao leitor, exclamacao, emoji, primeira pessoa do singular e vocabulario fora do dominio de engenharia ('a coisa quebra', 'da ruim', 'so jogar isso no endpoint').",
+        "acao": "reprova",
+        "correcao_exigida": "Voz ativa com o componente como sujeito e verbo de engenharia: registra, resolve, serializa, encaminha, autentica, expoe, encerra."
+      },
+      {
+        "id": "storytelling",
+        "regra": "Narrativa informal no lugar da descricao do sistema: enredo com comeco, meio e fim, suspense, jornada do desenvolvedor, dialogo imaginario, 'imagine que voce...' e analogia domestica que substitui o mecanismo em vez de ilustra-lo.",
+        "acao": "reprova",
+        "correcao_exigida": "Fato primeiro, consequencia depois, na ordem em que o leitor precisa deles. O que a narrativa ia explicar vira uma frase declarativa, uma tabela ou um diagrama."
+      },
+      {
+        "id": "frase-de-efeito",
+        "regra": "Sentenca curta e conclusiva que reafirma o obvio sem acrescentar dado verificavel: aforismo, slogan e contraste 'X, nao Y' em que Y e espantalho.",
+        "acao": "ajuste automatico: apagar a frase, ou reescreve-la enunciando o fato",
+        "verificacao": "python3 scripts/docfmt.py check <arquivo>  # codigo [frase-de-efeito]"
+      }
+    ],
+    "referencias": [
+      "SKILL.md, secao 5 da parte 'A frase: objetiva, concisa, coesa'",
+      "references/gramatica.md, secao 'Antropomorfismo: verbo humano em artefato de software'"
+    ]
+  }
+}

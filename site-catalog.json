@@ -1,0 +1,565 @@
+{
+  "schemaVersion": 1,
+  "repository": "Projeto-SynPower/synapse",
+  "plugins": [
+    {
+      "id": "guardrails",
+      "version": "0.1.2",
+      "description": "Guardrails para agentes que operam trackers (GitHub/GitLab self-hosted): bloqueia leitura de segredos e de ambiente e qualquer escrita no tracker. Hooks de PreToolUse + skill.",
+      "skills": [
+        "tracker-readonly"
+      ]
+    },
+    {
+      "id": "issue-planning",
+      "version": "0.9.0",
+      "description": "Planeja issues (Feature/Fix/Bug) a partir de uma ideia: brainstorm com perguntas independentes, exemplos da indústria quando a ideia é vaga e discordância com evidência; wayfinder em modo local para esforços grandes; e a skill autocontida issue-writer (board, código, prova de Bug, rascunho local, uma rodada de avaliação). Traz grilling, domain-modeling, wayfinder, research e diagnosing-bugs do mattpocock/skills (MIT) e a escrita-tecnica-ptbr e o stop-slop para a prosa das issues. Não publica no rastreador.",
+      "skills": [
+        "issue-planning",
+        "issue-writer",
+        "grilling",
+        "domain-modeling",
+        "wayfinder",
+        "research",
+        "diagnosing-bugs",
+        "escrita-tecnica-ptbr",
+        "stop-slop",
+        "brainstorm"
+      ]
+    },
+    {
+      "id": "tracker-gitlab",
+      "version": "0.1.0",
+      "description": "Servidor MCP do GitLab (self-hosted ou gitlab.com) empacotado em modo somente leitura: o servidor nao expoe nenhuma ferramenta de escrita. Host e token pedidos na ativacao. Para o Claude Code; no Codex a configuracao e manual (README).",
+      "skills": [
+        "gitlab-readonly"
+      ]
+    },
+    {
+      "id": "project-scoping",
+      "version": "0.4.0",
+      "description": "Ajuda um gerente a preencher a projetização de um produto no template acordado, em linguagem não técnica e de escopo macro: entrevista uma pergunta por vez e escreve o documento e um briefing em tópicos durante a entrevista (prontos para consulta a cada mudança de escopo de perguntas), discordância com evidência, pesquisa de fontes confiáveis (empresas, bases acadêmicas), wayfinder em modo local para ideias grandes e a skill autocontida project-brief-writer com uma rodada de avaliação só da escrita. Só grava arquivos locais; não envia nada.",
+      "skills": [
+        "project-brief-writer",
+        "grilling",
+        "domain-modeling",
+        "wayfinder",
+        "research",
+        "project-scoping",
+        "brainstorm"
+      ]
+    },
+    {
+      "id": "implement-issue",
+      "version": "0.1.0",
+      "description": "Implementa uma issue a partir do arquivo .md que a descreve (problema, objetivo, critérios de aceite e artefatos auxiliares): extrai os critérios, propõe um plano e espera a aprovação humana, implementa em branch local, roda os portões de qualidade e revisa o código contra os critérios. Não publica no rastreador: o push e o MR ficam com o usuário.",
+      "skills": [
+        "implement-issue",
+        "diff-review",
+        "issue-apply",
+        "issue-document",
+        "issue-explore",
+        "issue-propose",
+        "stop-slop-delivery",
+        "tdd"
+      ]
+    }
+  ],
+  "skills": [
+    {
+      "id": "issue-writer",
+      "version": "0.11.0",
+      "kind": "own",
+      "tracker": "read",
+      "scope": "general",
+      "internal": false,
+      "path": "skills/issue-writer",
+      "description": "Use when turning a demand into reviewed issue drafts (Feature, Fix or Bug) for a GitHub or GitLab project. Interviews the user when the brief is incomplete, checks the board for duplicates, confirms against the code, proves bugs with a reproducible artifact, and writes local drafts. Does not publish on its own. Self-contained, everything it needs is in its own references.",
+      "requires": [],
+      "plugins": [
+        "issue-planning"
+      ],
+      "origin": {
+        "repo": null,
+        "license": null
+      }
+    },
+    {
+      "id": "tracker-readonly",
+      "version": "0.2.0",
+      "kind": "own",
+      "tracker": "read",
+      "scope": "general",
+      "internal": false,
+      "path": "skills/tracker-readonly",
+      "description": "Use when consulting or planning against a GitHub or GitLab tracker (issues, MRs, PRs, boards). Read-only access, drafts go to local files, never publish.",
+      "requires": [],
+      "plugins": [
+        "guardrails"
+      ],
+      "origin": {
+        "repo": null,
+        "license": null
+      }
+    },
+    {
+      "id": "grilling",
+      "version": "0.1.0",
+      "kind": "external",
+      "tracker": "none",
+      "scope": "general",
+      "internal": true,
+      "path": "skills/grilling",
+      "description": "Grill the user relentlessly about a plan, decision, or idea. Use when the user wants to stress-test their thinking, or uses any 'grill' trigger phrases.",
+      "requires": [],
+      "plugins": [
+        "issue-planning",
+        "project-scoping"
+      ],
+      "origin": {
+        "repo": "https://github.com/mattpocock/skills",
+        "license": "mattpocock-skills"
+      }
+    },
+    {
+      "id": "domain-modeling",
+      "version": "0.1.0",
+      "kind": "external",
+      "tracker": "none",
+      "scope": "general",
+      "internal": true,
+      "path": "skills/domain-modeling",
+      "description": "Build and sharpen a project's domain model. Use when discussing codebase terminology, writing or editing a GLOSSARY.md, or recording or editing an ADR.",
+      "requires": [],
+      "plugins": [
+        "issue-planning",
+        "project-scoping"
+      ],
+      "origin": {
+        "repo": "https://github.com/mattpocock/skills",
+        "license": "mattpocock-skills"
+      }
+    },
+    {
+      "id": "wayfinder",
+      "version": "0.1.0",
+      "kind": "external",
+      "tracker": "write",
+      "scope": "general",
+      "internal": true,
+      "path": "skills/wayfinder",
+      "description": "Plan a huge chunk of work (more than one agent session can hold) as a shared map of decision tickets on your issue tracker, and resolve them one at a time until the way to the destination is clear.",
+      "requires": [
+        "grilling",
+        "domain-modeling"
+      ],
+      "plugins": [
+        "issue-planning",
+        "project-scoping"
+      ],
+      "origin": {
+        "repo": "https://github.com/mattpocock/skills",
+        "license": "mattpocock-skills"
+      }
+    },
+    {
+      "id": "research",
+      "version": "0.1.0",
+      "kind": "external",
+      "tracker": "none",
+      "scope": "general",
+      "internal": true,
+      "path": "skills/research",
+      "description": "Investigate a question against high-trust primary sources and capture the findings as a Markdown file in the repo. Use when the user wants a topic researched, docs or API facts gathered, or reading legwork delegated to a background agent.",
+      "requires": [],
+      "plugins": [
+        "issue-planning",
+        "project-scoping"
+      ],
+      "origin": {
+        "repo": "https://github.com/mattpocock/skills",
+        "license": "mattpocock-skills"
+      }
+    },
+    {
+      "id": "diagnosing-bugs",
+      "version": "0.1.0",
+      "kind": "external",
+      "tracker": "none",
+      "scope": "plugin",
+      "internal": true,
+      "path": "plugins/issue-planning/skills/diagnosing-bugs",
+      "description": "Diagnosis loop for hard bugs and performance regressions. Use when the user says \"diagnose\"/\"debug this\", or reports something broken/throwing/failing/slow.",
+      "requires": [],
+      "plugins": [
+        "issue-planning"
+      ],
+      "origin": {
+        "repo": "https://github.com/mattpocock/skills",
+        "license": "mattpocock-skills"
+      }
+    },
+    {
+      "id": "implement-issue-gitlab",
+      "version": "0.1.0",
+      "kind": "copy",
+      "tracker": "write",
+      "scope": "general",
+      "internal": false,
+      "path": "skills/implement-issue-gitlab",
+      "description": "Autonomous orchestrator for the `ia_produtos` GitLab group. Given an issue link or number, this skill manages the entire lifecycle: gathering context, planning, directing sub-agents to research and build, enforcing quality gates (tests/Sonar/architecture), and opening the Merge Request. It uses `gitlab-mcp-skill` for API operations, `cavecrew` (investigator, builder, reviewer) for execution, and the stack's architecture skill (`lca` for Python services, `feature-sliced-design` for React frontends) to keep the implementation inside its layer boundaries.",
+      "requires": [
+        "gitlab-mcp-skill",
+        "cavecrew",
+        "caveman",
+        "lca",
+        "feature-sliced-design"
+      ],
+      "plugins": [],
+      "origin": {
+        "repo": "https://labgit.synchro.com.br/ia_produtos/sibipiruna.git",
+        "license": null
+      }
+    },
+    {
+      "id": "lca",
+      "version": "0.1.0",
+      "kind": "copy",
+      "tracker": "none",
+      "scope": "general",
+      "internal": false,
+      "path": "skills/lca",
+      "description": "Layered Capability Architecture (LCA) skill for structuring Python backend projects: seven-level layer stack (L5 Entrypoint, L4 Delivery, L3 Application, LC Capability, L2 Persistence, L1 Platform, L0 Contracts), strictly downward dependencies enforced with import-linter, and pluggable capability slices selected at runtime. Use this skill whenever the task involves deciding where Python code belongs (router, service, repository, connector, schema, model, util), creating a new domain or endpoint end to end, adding a repository or a service, adding a new implementation to a pluggable capability or deciding whether a capability is justified at all, writing or debugging import-linter contracts, resolving an import boundary violation without silencing the linter, adding a second delivery vertical (worker, CLI, consumer), scaffolding a new Python service repository, reviewing a Python PR for architectural boundaries, or refactoring code that sits in the wrong layer. Also use it when the user mentions LCA, layered architecture, capability slices, `shared/`, `src/<delivery>/services/`, import-linter, or asks \"where does this code go\" in a Python service — even if they never name the methodology.",
+      "requires": [],
+      "plugins": [],
+      "origin": {
+        "repo": "https://labgit.synchro.com.br/ia_produtos/sibipiruna.git",
+        "license": null
+      }
+    },
+    {
+      "id": "review-issue-gitlab",
+      "version": "0.1.0",
+      "kind": "copy",
+      "tracker": "read",
+      "scope": "general",
+      "internal": false,
+      "path": "skills/review-issue-gitlab",
+      "description": "Analisa alterações de uma branch em relação aos requisitos de uma issue do GitLab e identifica bugs, vulnerabilidades e pontos de atenção. Use para revisão com relatório na conversa, sem publicar comentários ou alterar o GitLab.",
+      "requires": [
+        "gitlab-mcp-skill",
+        "cavecrew"
+      ],
+      "plugins": [],
+      "origin": {
+        "repo": "https://labgit.synchro.com.br/ia_produtos/sibipiruna.git",
+        "license": null
+      }
+    },
+    {
+      "id": "stop-slop",
+      "version": "0.1.0",
+      "kind": "copy",
+      "tracker": "none",
+      "scope": "general",
+      "internal": false,
+      "path": "skills/stop-slop",
+      "description": "Eliminate AI prose patterns while preserving deep technical context, business rationale, and actionable precision.",
+      "requires": [],
+      "plugins": [
+        "issue-planning"
+      ],
+      "origin": {
+        "repo": "https://labgit.synchro.com.br/ia_produtos/sibipiruna.git",
+        "license": null
+      }
+    },
+    {
+      "id": "gitlab-readonly",
+      "version": "0.1.0",
+      "kind": "own",
+      "tracker": "read",
+      "scope": "general",
+      "internal": false,
+      "path": "skills/gitlab-readonly",
+      "description": "Use when reading a GitLab project (issues, merge requests, diffs, commits, files) through the GitLab MCP server. Read-only tools only; never publish.",
+      "requires": [],
+      "plugins": [
+        "tracker-gitlab"
+      ],
+      "origin": {
+        "repo": null,
+        "license": null
+      }
+    },
+    {
+      "id": "issue-planning",
+      "version": "0.1.0",
+      "kind": "own",
+      "tracker": "none",
+      "scope": "plugin",
+      "internal": true,
+      "path": "plugins/issue-planning/skills/issue-planning",
+      "description": "Use when the user brings an idea or demand for a GitHub or GitLab project and wants issue drafts out of it. Runs the brainstorm skill (independent questions, industry examples when the idea is vague, evidence-based pushback), splits big efforts with wayfinder, then hands a briefing to issue-writer. Plugin-only skill; drafts stay local.",
+      "requires": [],
+      "plugins": [
+        "issue-planning"
+      ],
+      "origin": {
+        "repo": null,
+        "license": null
+      }
+    },
+    {
+      "id": "escrita-tecnica-ptbr",
+      "version": "0.2.0",
+      "kind": "own",
+      "tracker": "none",
+      "scope": "general",
+      "internal": false,
+      "path": "skills/escrita-tecnica-ptbr",
+      "description": "Padrão de escrita de documentação técnica em português brasileiro, extraído dos projetos Synchro (ai-agents, data-pipeline-orchestrator) e aplicável a qualquer repositório que documente em português. Use sempre que for criar, editar, revisar, traduzir ou expandir qualquer Markdown de documentação, incluindo `docs/**`, `README.md`, `tests/README.md`, ADRs, docs de tabelas de banco, guias de API e de jobs, e também ao gerar ou alterar diagramas Mermaid dentro desses documentos. Cobre voz, estrutura, gramática e pontuação do português, frase objetiva sem frases de efeito, uso correto do travessão, formatação mdformat de 120 colunas, tabelas, exemplos e diagramas. Acione mesmo quando o pedido for indireto (\"documenta esse endpoint\", \"escreve um ADR pra essa decisão\", \"atualiza o README com o novo job\", \"revisa esse texto\", \"explica isso na doc\") ou quando a documentação for subproduto de outra tarefa, como documentar código recém-escrito.",
+      "requires": [],
+      "plugins": [
+        "issue-planning"
+      ],
+      "origin": {
+        "repo": null,
+        "license": null
+      }
+    },
+    {
+      "id": "verificador-agentes-api",
+      "version": "0.1.0",
+      "kind": "own",
+      "tracker": "read",
+      "scope": "general",
+      "internal": false,
+      "path": "skills/verificador-agentes-api",
+      "description": "Investiga sem modificar um módulo, repositório ou API REST (com ou sem OpenAPI) e gera relatório dos problemas que impedem agentes de IA/MCP de consumi-lo.",
+      "requires": [
+        "description"
+      ],
+      "plugins": [],
+      "origin": {
+        "repo": null,
+        "license": null
+      }
+    },
+    {
+      "id": "project-brief-writer",
+      "version": "0.2.0",
+      "kind": "own",
+      "tracker": "none",
+      "scope": "plugin",
+      "internal": true,
+      "path": "plugins/project-scoping/skills/project-brief-writer",
+      "description": "Use when a manager or client user needs to fill the agreed project scoping document (projetização de produto) in plain Portuguese. Interviews one question at a time, challenges claims with evidence, researches reliable sources (big-company first-party material, academic bases), writes the human-readable, non-technical, macro-level draft in the agreed template while the interview runs (a consultable draft and a bulleted briefing, ready at each change of question scope), and runs one writing-only evaluation round. Writes local files only. Self-contained, everything it needs is in its own references.",
+      "requires": [],
+      "plugins": [
+        "project-scoping"
+      ],
+      "origin": {
+        "repo": null,
+        "license": null
+      }
+    },
+    {
+      "id": "project-scoping",
+      "version": "0.2.0",
+      "kind": "own",
+      "tracker": "none",
+      "scope": "plugin",
+      "internal": true,
+      "path": "plugins/project-scoping/skills/project-scoping",
+      "description": "Use when a manager or client user brings a product idea and wants the agreed project scoping document (projetização) out of it. Runs the brainstorm skill (independent questions one at a time, reference examples from big companies and academic sources when the idea is vague, evidence-based pushback) while a bulleted briefing and the draft document grow in parallel and are ready for the user to read at each change of question scope, splits big ideas with wayfinder, then hands over to project-brief-writer for the final writing and evaluation. Plugin-only skill; drafts stay local.",
+      "requires": [],
+      "plugins": [
+        "project-scoping"
+      ],
+      "origin": {
+        "repo": null,
+        "license": null
+      }
+    },
+    {
+      "id": "brainstorm",
+      "version": "0.1.0",
+      "kind": "own",
+      "tracker": "none",
+      "scope": "general",
+      "internal": false,
+      "path": "skills/brainstorm",
+      "description": "Use when the user wants to brainstorm, debate options, stress-test an idea, plan before building, or asks \"não seria melhor...?\". Interviews with independent questions through the harness question tool, checks claims against primary sources (official docs, ACM, IEEE, big-company engineering blogs), corrects the user with evidence instead of agreeing by default, and closes with a confirmed summary. Does not write the final document or code.",
+      "requires": [],
+      "plugins": [
+        "issue-planning",
+        "project-scoping"
+      ],
+      "origin": {
+        "repo": null,
+        "license": null
+      }
+    },
+    {
+      "id": "knowledge-studio-ds",
+      "version": "0.2.0",
+      "kind": "own",
+      "tracker": "none",
+      "scope": "general",
+      "internal": false,
+      "path": "skills/knowledge-studio-ds",
+      "description": "Design system do AI Knowledge Studio (app de governança de bases de conhecimento para agentes de IA, em shadcn/ui + Tailwind v4). Use SEMPRE que for criar, alterar, prototipar ou revisar qualquer tela, componente, card, dashboard, formulário, estado ou texto de interface do Knowledge Studio, mesmo sem o nome da skill no pedido. Isso inclui pedidos como \"tela de pipelines\", \"card de conector\", \"cockpit\", \"página de publicação\", \"chat com os dados\", \"Chunk Studio\", \"Retrieval Lab\", \"perfis de ingestão\", \"auditoria e lineage\", \"badge de status da base\", \"mockup de adicionar dados\", a versão escura de uma tela, ou \"isso está no padrão do app?\". Traz os tokens medidos no CSS do app (claro e escuro), o vocabulário de status, os padrões de tela observados e verificadores de contraste, lint e dominância de cor.",
+      "requires": [],
+      "plugins": [],
+      "origin": {
+        "repo": null,
+        "license": null
+      }
+    },
+    {
+      "id": "implement-issue",
+      "version": "0.2.0",
+      "kind": "own",
+      "tracker": "none",
+      "scope": "plugin",
+      "internal": true,
+      "path": "plugins/implement-issue/skills/implement-issue",
+      "description": "Orquestra a implementação de uma issue em branch local, do plano à revisão, sem fazer push. A issue vem do contexto da conversa, de um arquivo .md ou .txt, ou de outro texto. Coordena os agentes planner, software-engineer e code-reviewer, mantém duas aprovações humanas (plano e resultado) e dá prioridade às skills locais do repositório, perguntando ao usuário em caso de conflito. Use quando o pedido for implementar, desenvolver ou resolver uma issue, ou \"/implement-issue <arquivo>\".",
+      "requires": [],
+      "plugins": [
+        "implement-issue"
+      ],
+      "origin": {
+        "repo": null,
+        "license": null
+      }
+    },
+    {
+      "id": "issue-document",
+      "version": "0.1.0",
+      "kind": "own",
+      "tracker": "none",
+      "scope": "plugin",
+      "internal": true,
+      "path": "plugins/implement-issue/skills/issue-document",
+      "description": "Gera a documentação do repositório (ADRs, decisões arquiteturais, diagramas e atualização de documentos existentes) a partir dos artefatos de uma issue já implementada e aprovada. Tem quatro modos (listar candidatos, escrever os aprovados, commitar e descartar) e nunca publica fora do repositório. Use depois da aprovação final da implementação e antes de apagar `.scratch/<issue>/`.",
+      "requires": [],
+      "plugins": [
+        "implement-issue"
+      ],
+      "origin": {
+        "repo": null,
+        "license": null
+      }
+    },
+    {
+      "id": "issue-explore",
+      "version": "0.2.0",
+      "kind": "own",
+      "tracker": "none",
+      "scope": "plugin",
+      "internal": true,
+      "path": "plugins/implement-issue/skills/issue-explore",
+      "description": "Investiga o repositório a partir de uma issue que será implementada e grava o resultado em `.scratch/<issue>/exploration.md`, sem alterar código. Mapeia arquivos e símbolos a mudar, documentação e testes afetados, comandos de teste e lint, convenções e skills locais de desenvolvimento, riscos e dúvidas. Use antes de planejar a implementação de uma issue, ou quando o pedido for \"explorar a issue\", \"o que precisa mudar para esta issue\".",
+      "requires": [],
+      "plugins": [
+        "implement-issue"
+      ],
+      "origin": {
+        "repo": null,
+        "license": null
+      }
+    },
+    {
+      "id": "issue-propose",
+      "version": "0.2.0",
+      "kind": "own",
+      "tracker": "none",
+      "scope": "plugin",
+      "internal": true,
+      "path": "plugins/implement-issue/skills/issue-propose",
+      "description": "Transforma a exploração de uma issue em `proposal.md`, `design.md` e `tasks.md` dentro de `.scratch/<issue>/`, com cada tarefa ligada a um critério de aceite. Use depois da `issue-explore`, para produzir o plano que o humano aprova antes da implementação. Não altera código.",
+      "requires": [],
+      "plugins": [
+        "implement-issue"
+      ],
+      "origin": {
+        "repo": null,
+        "license": null
+      }
+    },
+    {
+      "id": "issue-apply",
+      "version": "0.2.0",
+      "kind": "own",
+      "tracker": "none",
+      "scope": "plugin",
+      "internal": true,
+      "path": "plugins/implement-issue/skills/issue-apply",
+      "description": "Implementa, em branch local, as tarefas do plano aprovado em `.scratch/<issue>/tasks.md`, uma por vez, com TDD, marcando cada tarefa e registrando a evidência, e roda os portões de qualidade no fim. Nunca faz push. Use só depois de o plano ser aprovado pelo humano.",
+      "requires": [],
+      "plugins": [
+        "implement-issue"
+      ],
+      "origin": {
+        "repo": null,
+        "license": null
+      }
+    },
+    {
+      "id": "diff-review",
+      "version": "0.1.0",
+      "kind": "own",
+      "tracker": "none",
+      "scope": "plugin",
+      "internal": true,
+      "path": "plugins/implement-issue/skills/diff-review",
+      "description": "Review humano do diff entre duas branches locais, num HTML no estilo de MR do GitHub/GitLab em que o usuário anota linhas e arquivos e compila as notas num Markdown para o agente de codificação. Use quando o pedido for ver, revisar ou comparar a implementação de uma branch contra outra (\"quero ver o diff da dev com a branch da issue\", \"gera o review desta branch\", \"/diff-review\"), ou aplicar o Markdown de notas que saiu desse review. Revisão feita pelo próprio agente cabe ao agente `code-reviewer`, não a esta skill.",
+      "requires": [],
+      "plugins": [
+        "implement-issue"
+      ],
+      "origin": {
+        "repo": null,
+        "license": null
+      }
+    },
+    {
+      "id": "tdd",
+      "version": "0.1.0",
+      "kind": "own",
+      "tracker": "none",
+      "scope": "plugin",
+      "internal": true,
+      "path": "plugins/implement-issue/skills/tdd",
+      "description": "Test-driven development. Use when the user wants to build features or fix bugs test-first, mentions \"red-green-refactor\", or wants integration tests.",
+      "requires": [],
+      "plugins": [
+        "implement-issue"
+      ],
+      "origin": {
+        "repo": null,
+        "license": null
+      }
+    },
+    {
+      "id": "stop-slop-delivery",
+      "version": "0.2.0",
+      "kind": "own",
+      "tracker": "none",
+      "scope": "plugin",
+      "internal": true,
+      "path": "plugins/implement-issue/skills/stop-slop-delivery",
+      "description": "Corta marcas de texto de IA nos textos que a implementação de uma issue entrega, como mensagem de commit, relatório de critérios de aceite e rascunho de descrição de MR e documentos de decisão do repositório (ADR, diagrama, atualização de docs). Use ao redigir ou revisar esses textos. Não vale para issues, nem para comentários em código.",
+      "requires": [],
+      "plugins": [
+        "implement-issue"
+      ],
+      "origin": {
+        "repo": null,
+        "license": null
+      }
+    }
+  ]
+}
