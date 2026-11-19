@@ -1,0 +1,15 @@
+name: Build web image
+on:
+  push:
+    branches: [main]
+
+permissions: {}
+
+jobs:
+  build:
+    permissions:
+      contents: read
+      packages: write
+    uses: Projeto-SynPower/infra/.github/workflows/docker-build.yml@v1.0.0
+    with:
+      images: '[{"name":"web","dockerfile":"docker/web.Dockerfile"}]'
