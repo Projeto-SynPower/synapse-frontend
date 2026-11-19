@@ -32,8 +32,8 @@ Depois rode `build_data.py` aqui. Rode também depois de mudar `content/ptbr.jso
 | `content/instalar.json` | Notas de instalação por plugin e por via (npx, Claude Code, Codex). Os comandos são montados em `app.js`; só afirme o que está nos READMEs do repositório. |
 | `site-catalog.json` | Contrato vindo do Synapse. Não editar. |
 | `data/catalog.js` | Gerado. Não editar. |
-| `scripts/stage_pages.sh` | Monta `_site/` só com o que vai ao GitHub Pages. |
-| `.github/workflows/pages.yml` | Publica no GitHub Pages. |
+| `scripts/stage_pages.sh` | Monta os arquivos estáticos da imagem em `_site/`. |
+| `https://synapse.synpower.ia.br` | Landing publicada pelo Portainer. |
 | `.agents/skills/` | Skills locais. `.claude/skills/` aponta para elas por link relativo. |
 
 ## Regras
