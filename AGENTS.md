@@ -70,3 +70,9 @@ Referência: antigravity.google (campo de partículas no hero, título que sobe 
 ## Pendências de design (o DS não cobre)
 
 A landing usa o tema do app. O DS não mede hero de marketing nem overlay (§1.2, §9.9, §29.3). Foram derivados dos tokens: hero, modal, abas de plugin, diagrama. Valide com o time antes de tratar como definitivo.
+
+## Imagem da landing
+
+Use `docker build -f docker/web.Dockerfile -t synapse-web:local .` e
+`docker run --rm -p 127.0.0.1:8080:8080 synapse-web:local`. Abra `http://127.0.0.1:8080`.
+O build confere os dados antes de empacotar o site. Cada push na main publica a imagem no GHCR com a tag do commit.
