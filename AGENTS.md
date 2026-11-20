@@ -77,6 +77,6 @@ A landing usa o tema do app. O DS não mede hero de marketing nem overlay (§1.2
 Use `docker build -f docker/web.Dockerfile -t synapse-web:local .` e
 `docker run --rm -p 127.0.0.1:8080:8080 synapse-web:local`. Abra `http://127.0.0.1:8080`.
 O build confere os dados antes de empacotar o site. Cada push na main publica a imagem no GHCR com a tag do commit,
-e o resumo da execução mostra o digest usado na stack do infra. O workflow não chama o reutilizável do infra porque o
-GitHub não deixa um repositório público usar workflow de repositório privado. Se a landing ficar privada, volte a
-chamar `Projeto-SynPower/infra/.github/workflows/docker-build.yml` pela versão fixada.
+pelo workflow reutilizável `Projeto-SynPower/infra/.github/workflows/docker-build.yml` na versão fixada. O resumo da
+execução mostra o digest usado na stack do infra. Isso só funciona com a landing privada: o GitHub não deixa
+repositório público chamar workflow de repositório privado.
